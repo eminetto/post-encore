@@ -2,10 +2,14 @@
 
 ## To Do
 
-- [x] Microservice User
-- [x] Microservice Feedback
+- [ ] Microservice User
+    - [ ] Add tests
+- [ ] Microservice Feedback
+    - [ ] Add tests
 - [ ] Microservice Vote
+    - [ ] Add tests
 - [ ] Microservice Audit
+    - [ ] Add tests
 - [ ] Add communication between User and Audit through events
 - [ ] Solve problem with middleware duplicated in Feedback and Vote
 - [ ] Add documentation to this README.md
