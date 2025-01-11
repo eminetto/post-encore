@@ -5,11 +5,22 @@ import (
 
 	"encore.app/user/security"
 	"encore.dev/beta/errs"
+	"encore.dev/pubsub"
 	"encore.dev/storage/sqldb"
 )
 
 var db = sqldb.NewDatabase("user", sqldb.DatabaseConfig{
 	Migrations: "./migrations",
+})
+
+// AuthEvent are the parameters to the AuthEvent
+type AuthEvent struct {
+	UserEmail string
+}
+
+// AuthEvents topic
+var AuthEvents = pubsub.NewTopic[*AuthEvent]("auth", pubsub.TopicConfig{
+	DeliveryGuarantee: pubsub.AtLeastOnce,
 })
 
 // AuthParams are the parameters to the Auth method
@@ -37,6 +48,10 @@ func Auth(ctx context.Context, p *AuthParams) (*AuthResponse, error) {
 	}
 	var response AuthResponse
 	response.Token, err = security.NewToken(p.Email)
+	if err != nil {
+		return nil, eb.Code(errs.Internal).Msg("internal error").Err()
+	}
+	_, err = AuthEvents.Publish(ctx, &AuthEvent{UserEmail: p.Email})
 	if err != nil {
 		return nil, eb.Code(errs.Internal).Msg("internal error").Err()
 	}

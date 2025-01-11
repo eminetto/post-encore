@@ -1,0 +1,1 @@
+create table audit_auths (id varchar(50) PRIMARY key,email varchar(255),created_at date);
