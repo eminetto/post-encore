@@ -1,0 +1,1 @@
+create table feedbacks (id varchar(50) PRIMARY key,email varchar(255),title varchar(255),body text,  created_at date, updated_at date);
