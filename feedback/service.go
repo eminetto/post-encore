@@ -7,6 +7,11 @@ import (
 	"github.com/google/uuid"
 )
 
+// UseCase is feedback logic interface
+type UseCase interface {
+	Store(ctx context.Context, f *Feedback) (string, error)
+}
+
 // Service is the service for the feedback package
 type Service struct {
 	DB *sqldb.Database

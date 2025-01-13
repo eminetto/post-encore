@@ -1,2 +1,2 @@
 create table users (id varchar(50) PRIMARY KEY ,email varchar(255),password varchar(255),first_name varchar(100), last_name varchar(100), created_at date, updated_at date);
-INSERT INTO users (id, email, password, first_name, last_name, created_at, updated_at) values ('8cb2237d0679ca88db6464eac60da96345513964','eminetto@email.com','8CB2237D0679CA88DB6464EAC60DA96345513964', 'Elton', 'Minetto', now(), null);
+INSERT INTO users (id, email, password, first_name, last_name, created_at, updated_at) values ('8cb2237d0679ca88db6464eac60da96345513964','eminetto@email.com','8cb2237d0679ca88db6464eac60da96345513964', 'Elton', 'Minetto', now(), null);

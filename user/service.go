@@ -8,6 +8,12 @@ import (
 	"encore.dev/storage/sqldb"
 )
 
+// UseCase is user logic interface
+type UseCase interface {
+	ValidateUser(ctx context.Context, email, password string) error
+	ValidatePassword(ctx context.Context, u *User, password string) error
+}
+
 // Service is the service for the user package
 type Service struct {
 	DB *sqldb.Database
@@ -25,7 +31,6 @@ func (s *Service) ValidateUser(ctx context.Context, email, password string) erro
         select id, email, password, first_name, last_name from users where email = $1
     `, email).Scan(&u.ID, &u.Email, &u.Password, &u.FirstName, &u.LastName)
 	if err != nil {
-		fmt.Println(err)
 		return fmt.Errorf("invalid user %w", err)
 	}
 	err = s.ValidatePassword(ctx, &u, password)
@@ -41,8 +46,6 @@ func (s *Service) ValidatePassword(ctx context.Context, u *User, password string
 	h.Write([]byte(password))
 	p := fmt.Sprintf("%x", h.Sum(nil))
 	if p != u.Password {
-		fmt.Println(p)
-		fmt.Println(u)
 		return fmt.Errorf("invalid password")
 	}
 	return nil

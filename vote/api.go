@@ -11,6 +11,16 @@ var db = sqldb.NewDatabase("vote", sqldb.DatabaseConfig{
 	Migrations: "./migrations",
 })
 
+// API defines the API for the user service
+// encore: service
+type API struct {
+	Service UseCase
+}
+
+func initAPI() (*API, error) {
+	return &API{Service: NewService(db)}, nil
+}
+
 // EmailKey is the key used to store the email in the context
 type EmailKey string
 
@@ -30,7 +40,7 @@ type StoreVoteResponse struct {
 // StoreVote stores vote
 //
 //encore:api public method=POST path=/v1/vote tag:authenticated
-func StoreVote(ctx context.Context, p *StoreVoteParams) (*StoreVoteResponse, error) {
+func (a *API) StoreVote(ctx context.Context, p *StoreVoteParams) (*StoreVoteResponse, error) {
 	eb := errs.B().Meta("store_vote", p.TalkName)
 	email := ctx.Value(emailKey).(string)
 	s := NewService(db)

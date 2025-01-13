@@ -7,6 +7,11 @@ import (
 	"github.com/google/uuid"
 )
 
+// UseCase is vote logic interface
+type UseCase interface {
+	Store(ctx context.Context, v *Vote) (string, error)
+}
+
 // Service is the service for the vote package
 type Service struct {
 	DB *sqldb.Database

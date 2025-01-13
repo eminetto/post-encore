@@ -13,6 +13,16 @@ var db = sqldb.NewDatabase("user", sqldb.DatabaseConfig{
 	Migrations: "./migrations",
 })
 
+// API defines the API for the user service
+// encore: service
+type API struct {
+	Service UseCase
+}
+
+func initAPI() (*API, error) {
+	return &API{Service: NewService(db)}, nil
+}
+
 // AuthEvent are the parameters to the AuthEvent
 type AuthEvent struct {
 	UserEmail string
@@ -37,7 +47,7 @@ type AuthResponse struct {
 // Auth authenticates a user and returns a token
 //
 //encore:api public method=POST path=/v1/auth
-func Auth(ctx context.Context, p *AuthParams) (*AuthResponse, error) {
+func (a *API) Auth(ctx context.Context, p *AuthParams) (*AuthResponse, error) {
 	s := NewService(db)
 	// Construct a new error builder with errs.B()
 	eb := errs.B().Meta("auth", p.Email)
@@ -71,7 +81,7 @@ type ValidateTokenResponse struct {
 // ValidateToken validates a token
 //
 //encore:api public method=POST path=/v1/validate-token
-func ValidateToken(ctx context.Context, p *ValidateTokenParams) (*ValidateTokenResponse, error) {
+func (a *API) ValidateToken(ctx context.Context, p *ValidateTokenParams) (*ValidateTokenResponse, error) {
 	// Construct a new error builder with errs.B()
 	eb := errs.B().Meta("validate_token", p.Token)
 	t, err := security.ParseToken(p.Token)

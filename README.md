@@ -3,7 +3,7 @@
 ## To Do
 
 - [x] Microservice User
-    - [ ] Add tests
+    - [x] Add tests
 - [x] Microservice Feedback
     - [ ] Add tests
 - [x] Microservice Vote

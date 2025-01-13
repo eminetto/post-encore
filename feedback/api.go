@@ -11,6 +11,16 @@ var db = sqldb.NewDatabase("feedback", sqldb.DatabaseConfig{
 	Migrations: "./migrations",
 })
 
+// API defines the API for the user service
+// encore: service
+type API struct {
+	Service UseCase
+}
+
+func initAPI() (*API, error) {
+	return &API{Service: NewService(db)}, nil
+}
+
 // EmailKey is the key used to store the email in the context
 type EmailKey string
 
@@ -30,16 +40,15 @@ type StoreFeedbackResponse struct {
 // StoreFeedback stores feedback
 //
 //encore:api public method=POST path=/v1/feedback tag:authenticated
-func StoreFeedback(ctx context.Context, p *StoreFeedbackParams) (*StoreFeedbackResponse, error) {
+func (a *API) StoreFeedback(ctx context.Context, p *StoreFeedbackParams) (*StoreFeedbackResponse, error) {
 	eb := errs.B().Meta("store_feedback", p.Title)
 	email := ctx.Value(emailKey).(string)
-	s := NewService(db)
 	f := &Feedback{
 		Email: email,
 		Title: p.Title,
 		Body:  p.Body,
 	}
-	id, err := s.Store(ctx, f)
+	id, err := a.Service.Store(ctx, f)
 	if err != nil {
 		return nil, eb.Code(errs.Internal).Msg("internal error").Err()
 	}
