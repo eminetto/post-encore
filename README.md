@@ -7,7 +7,7 @@
 - [x] Microservice Feedback
     - [ ] Add tests
 - [x] Microservice Vote
-    - [ ] Add tests
+    - [x] Add tests
 - [x] Microservice Audit
     - [ ] Add tests
 - [x] Add communication between User and Audit through events

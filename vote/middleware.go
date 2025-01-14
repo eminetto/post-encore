@@ -21,6 +21,6 @@ func IsAuthenticated(req middleware.Request, next middleware.Next) middleware.Re
 	if err != nil {
 		return middleware.Response{Err: eb.Code(errs.Unauthenticated).Msg("invalid token").Err()}
 	}
-	newCTX := context.WithValue(req.Context(), emailKey, resp.Email)
+	newCTX := context.WithValue(req.Context(), EmailKeyValue, resp.Email)
 	return next(req.WithContext(newCTX))
 }

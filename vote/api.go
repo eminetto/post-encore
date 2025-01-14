@@ -24,7 +24,8 @@ func initAPI() (*API, error) {
 // EmailKey is the key used to store the email in the context
 type EmailKey string
 
-const emailKey = EmailKey("email")
+// EmailKeyValue is the key used to store the email in the context
+const EmailKeyValue = EmailKey("email")
 
 // StoreVoteParams represents the response of the StoreVote function
 type StoreVoteParams struct {
@@ -42,14 +43,13 @@ type StoreVoteResponse struct {
 //encore:api public method=POST path=/v1/vote tag:authenticated
 func (a *API) StoreVote(ctx context.Context, p *StoreVoteParams) (*StoreVoteResponse, error) {
 	eb := errs.B().Meta("store_vote", p.TalkName)
-	email := ctx.Value(emailKey).(string)
-	s := NewService(db)
+	email := ctx.Value(EmailKeyValue).(string)
 	v := &Vote{
 		Email:    email,
 		TalkName: p.TalkName,
 		Score:    p.Score,
 	}
-	id, err := s.Store(ctx, v)
+	id, err := a.Service.Store(ctx, v)
 	if err != nil {
 		return nil, eb.Code(errs.Internal).Msg("internal error").Err()
 	}
