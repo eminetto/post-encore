@@ -23,8 +23,8 @@ func TestIntegration(t *testing.T) {
 		Body:  "body",
 	}
 
-	newCTX := context.WithValue(context.Background(), feedback.EmailKeyValue, "email@email.com")
-	resp, err := api.StoreFeedback(newCTX, &p)
+	ctx := context.WithValue(context.Background(), "Email", "email@email.com")
+	resp, err := api.StoreFeedback(ctx, &p)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

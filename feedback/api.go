@@ -3,6 +3,8 @@ package feedback
 import (
 	"context"
 
+	"encore.app/authentication"
+	"encore.dev/beta/auth"
 	"encore.dev/beta/errs"
 	"encore.dev/storage/sqldb"
 )
@@ -21,12 +23,6 @@ func initAPI() (*API, error) {
 	return &API{Service: NewService(db)}, nil
 }
 
-// EmailKey is the key used to store the email in the context
-type EmailKey string
-
-// EmailKeyValue is the value used to store the email in the context
-const EmailKeyValue = EmailKey("email")
-
 // StoreFeedbackParams represents the response of the StoreFeedback function
 type StoreFeedbackParams struct {
 	Title string `json:"title"`
@@ -40,10 +36,20 @@ type StoreFeedbackResponse struct {
 
 // StoreFeedback stores feedback
 //
-//encore:api public method=POST path=/v1/feedback tag:authenticated
+//encore:api auth method=POST path=/v1/feedback
 func (a *API) StoreFeedback(ctx context.Context, p *StoreFeedbackParams) (*StoreFeedbackResponse, error) {
 	eb := errs.B().Meta("store_feedback", p.Title)
-	email := ctx.Value(EmailKeyValue).(string)
+	var email string
+	data := auth.Data()
+	if data != nil {
+		email = data.(*authentication.Data).Email
+	}
+	if email == "" {
+		email = ctx.Value("Email").(string)
+	}
+	if email == "" {
+		return nil, eb.Code(errs.Unauthenticated).Msg("unauthenticated").Err()
+	}
 	f := &Feedback{
 		Email: email,
 		Title: p.Title,

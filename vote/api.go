@@ -3,6 +3,8 @@ package vote
 import (
 	"context"
 
+	"encore.app/authentication"
+	"encore.dev/beta/auth"
 	"encore.dev/beta/errs"
 	"encore.dev/storage/sqldb"
 )
@@ -40,10 +42,20 @@ type StoreVoteResponse struct {
 
 // StoreVote stores vote
 //
-//encore:api public method=POST path=/v1/vote tag:authenticated
+//encore:api auth method=POST path=/v1/vote tag:authenticated
 func (a *API) StoreVote(ctx context.Context, p *StoreVoteParams) (*StoreVoteResponse, error) {
 	eb := errs.B().Meta("store_vote", p.TalkName)
-	email := ctx.Value(EmailKeyValue).(string)
+	var email string
+	data := auth.Data()
+	if data != nil {
+		email = data.(*authentication.Data).Email
+	}
+	if email == "" {
+		email = ctx.Value("Email").(string)
+	}
+	if email == "" {
+		return nil, eb.Code(errs.Unauthenticated).Msg("unauthenticated").Err()
+	}
 	v := &Vote{
 		Email:    email,
 		TalkName: p.TalkName,

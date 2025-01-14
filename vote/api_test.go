@@ -23,8 +23,8 @@ func TestIntegration(t *testing.T) {
 		Score:    5,
 	}
 
-	newCTX := context.WithValue(context.Background(), vote.EmailKeyValue, "email@email.com")
-	resp, err := api.StoreVote(newCTX, &p)
+	ctx := context.WithValue(context.Background(), "Email", "email@email.com")
+	resp, err := api.StoreVote(ctx, &p)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
