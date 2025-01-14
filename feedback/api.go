@@ -24,7 +24,8 @@ func initAPI() (*API, error) {
 // EmailKey is the key used to store the email in the context
 type EmailKey string
 
-const emailKey = EmailKey("email")
+// EmailKeyValue is the value used to store the email in the context
+const EmailKeyValue = EmailKey("email")
 
 // StoreFeedbackParams represents the response of the StoreFeedback function
 type StoreFeedbackParams struct {
@@ -42,7 +43,7 @@ type StoreFeedbackResponse struct {
 //encore:api public method=POST path=/v1/feedback tag:authenticated
 func (a *API) StoreFeedback(ctx context.Context, p *StoreFeedbackParams) (*StoreFeedbackResponse, error) {
 	eb := errs.B().Meta("store_feedback", p.Title)
-	email := ctx.Value(emailKey).(string)
+	email := ctx.Value(EmailKeyValue).(string)
 	f := &Feedback{
 		Email: email,
 		Title: p.Title,

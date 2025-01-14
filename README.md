@@ -5,11 +5,11 @@
 - [x] Microservice User
     - [x] Add tests
 - [x] Microservice Feedback
-    - [ ] Add tests
+    - [x] Add tests
 - [x] Microservice Vote
     - [x] Add tests
 - [x] Microservice Audit
-    - [ ] Add tests
+    - [x] Add tests
 - [x] Add communication between User and Audit through events
 - [ ] Solve problem with middleware duplicated in Feedback and Vote
 - [ ] Deploy as docker images
