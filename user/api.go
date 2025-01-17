@@ -48,11 +48,10 @@ type AuthResponse struct {
 //
 //encore:api public method=POST path=/v1/auth
 func (a *API) Auth(ctx context.Context, p *AuthParams) (*AuthResponse, error) {
-	s := NewService(db)
 	// Construct a new error builder with errs.B()
 	eb := errs.B().Meta("auth", p.Email)
 
-	err := s.ValidateUser(ctx, p.Email, p.Password)
+	err := a.Service.ValidateUser(ctx, p.Email, p.Password)
 	if err != nil {
 		return nil, eb.Code(errs.Unauthenticated).Msg("invalid credentials").Err()
 	}
