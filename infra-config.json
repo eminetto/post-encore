@@ -1,0 +1,52 @@
+{
+    "$schema": "https://encore.dev/schemas/infra.schema.json",
+    "metadata": {
+        "app_id": "post-encore",
+        "env_name": "staging",
+        "env_type": "development",
+        "cloud": "aws",
+        "base_url": "http://localhost:4000"
+    },
+    "sql_servers": [
+        {
+            "host": "postgres:5432",
+            "databases": {
+                "audit": {
+                    "username": "my-db-owner",
+                    "password": "DB_PASSWORD"
+                },
+                "feedback": {
+                    "username": "my-db-owner",
+                    "password": "DB_PASSWORD"
+                },
+                "vote": {
+                    "username": "my-db-owner",
+                    "password": "DB_PASSWORD"
+                },
+                "user": {
+                    "username": "my-db-owner",
+                    "password": "DB_PASSWORD"
+                }
+            }
+        }
+    ],
+    "graceful_shutdown": {
+        "total": 30
+    },
+    "pubsub": [
+        {
+            "type": "nsq",
+            "hosts": "nsqd:4150",
+            "topics": {
+                "auth": {
+                    "name": "auth",
+                    "subscriptions": {
+                        "auth-audit": {
+                            "name": "auth-audit"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

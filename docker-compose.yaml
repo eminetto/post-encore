@@ -1,0 +1,58 @@
+services:
+  post-encore:
+    networks:
+      - post-encore-net
+    image: post-encore:v1.0
+    ports:
+      - 4000:4000
+  nsqlookupd:
+    networks:
+      - post-encore-net
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - "4160"
+      - "4161"
+  nsqd:
+    image: nsqio/nsq
+    networks:
+      - post-encore-net
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    ports:
+      - "4150"
+      - "4151"
+  nsqadmin:
+    image: nsqio/nsq
+    networks:
+      - post-encore-net
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd  
+    ports:
+      - "4171"
+  postgres:
+    image: postgres:latest
+    networks:
+      - post-encore-net
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: password
+      TZ: GMT
+      POSTGRES_PORT: 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+
+volumes:
+  postgres_volume:   
+   
+networks:
+  post-encore-net:
