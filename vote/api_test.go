@@ -22,7 +22,7 @@ func TestIntegration(t *testing.T) {
 		TalkName: "talk",
 		Score:    5,
 	}
-
+	// ctx := auth.WithContext(context.Background(), "uuid", &authentication.Data{Email:"eminetto@email.com"})
 	ctx := context.WithValue(context.Background(), "Email", "email@email.com")
 	resp, err := api.StoreVote(ctx, &p)
 	if err != nil {

@@ -23,12 +23,6 @@ func initAPI() (*API, error) {
 	return &API{Service: NewService(db)}, nil
 }
 
-// EmailKey is the key used to store the email in the context
-type EmailKey string
-
-// EmailKeyValue is the key used to store the email in the context
-const EmailKeyValue = EmailKey("email")
-
 // StoreVoteParams represents the response of the StoreVote function
 type StoreVoteParams struct {
 	TalkName string `json:"talk_name"`
@@ -42,12 +36,12 @@ type StoreVoteResponse struct {
 
 // StoreVote stores vote
 //
-//encore:api auth method=POST path=/v1/vote tag:authenticated
+//encore:api auth method=POST path=/v1/vote
 func (a *API) StoreVote(ctx context.Context, p *StoreVoteParams) (*StoreVoteResponse, error) {
 	eb := errs.B().Meta("store_vote", p.TalkName)
 	var email string
 	data := auth.Data()
-	if data != nil {
+	if data != nil { //@todo melhorar isso que foi criado por causa dos teste
 		email = data.(*authentication.Data).Email
 	}
 	if email == "" {
