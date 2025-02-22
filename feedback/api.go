@@ -2,7 +2,6 @@ package feedback
 
 import (
 	"context"
-
 	"encore.app/authentication"
 	"encore.dev/beta/auth"
 	"encore.dev/beta/errs"
@@ -43,9 +42,6 @@ func (a *API) StoreFeedback(ctx context.Context, p *StoreFeedbackParams) (*Store
 	data := auth.Data()
 	if data != nil {
 		email = data.(*authentication.Data).Email
-	}
-	if email == "" {
-		email = ctx.Value("Email").(string)
 	}
 	if email == "" {
 		return nil, eb.Code(errs.Unauthenticated).Msg("unauthenticated").Err()
